@@ -22,16 +22,19 @@ body {
     color: white;
     overflow-x: hidden;
 
-    /* 🎉 Birthday animated gradient background */
-    background: linear-gradient(135deg, #ff6ec7, #ffd86e, #6e9cff);
-    background-size: 400% 400%;
-    animation: birthdayGradient 15s ease infinite;
-}
-
-@keyframes birthdayGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    /* 🎂 Collage background using your GitHub folder "No subject" */
+    background-image: 
+        url('No subject/photo1.jpg'),
+        url('No subject/photo2.jpg'),
+        url('No subject/photo3.jpg'),
+        url('No subject/photo4.jpg'),
+        url('No subject/photo5.jpg'),
+        url('No subject/photo6.jpg');
+    background-size: 33% 33%;   /* each photo takes ~1/3 of width & height */
+    background-position: 
+        top left, top center, top right,
+        bottom left, bottom center;
+    background-repeat: no-repeat;
 }
 
 h1 {
@@ -113,7 +116,7 @@ button {
 
 <div id="countdown"></div>
 
-<!-- 🎵 Background song from your YouTube link -->
+<!-- 🎵 Background song -->
 <iframe width="0" height="0"
 src="https://www.youtube.com/embed/O9rk6ldyFkA?autoplay=1&loop=1&playlist=O9rk6ldyFkA"
 allow="autoplay"></iframe>
