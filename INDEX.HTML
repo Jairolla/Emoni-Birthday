@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Emoni</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+h1 { margin-top: 30px; font-size: 3em; }
+
+button {
+    margin-top: 20px;
+    padding: 18px 40px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 40px;
+    background: #ffcc00;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    50% { transform: scale(1.1); box-shadow: 0 0 30px #ffcc00; }
+}
+
+.birthdate {
+    display: block;
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-shadow: 0 0 20px #ffcc00;
+}
+
+#countdown {
+    font-size: 2em;
+    margin-top: 20px;
+    display: none;
+}
+
+#globeContainer {
+    width: 300px;
+    height: 300px;
+    margin: 30px auto;
+    display: none;
+}
+
+#ticket {
+    display: none;
+    background: white;
+    color: black;
+    margin: 30px auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
+
+#ticket h2 { margin: 0; }
+
+#message {
+    display: none;
+    font-size: 1.3em;
+    margin: 25px;
+    color: #ffccdd;
+}
+
+#qr {
+    margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎉 HAPPY BIRTHDAY <br> EMONI FAITH MORRIS 🎉</h1>
+
+<button onclick="startExperience()">
+    Please Click Here
+    <span class="birthdate">01 / 04 / 1999</span>
+</button>
+
+<div id="countdown"></div>
+
+<iframe width="0" height="0"
+src="https://www.youtube.com/embed/4fxPQUKfim4?autoplay=1&loop=1&playlist=4fxPQUKfim4"
+allow="autoplay"></iframe>
+
+<div id="globeContainer"></div>
+
+<div id="ticket"></div>
+
+<div id="message">
+💖 I love you baby girl you deserve the world.<br>
+I hope all your wishes come true my queen ❤️
+</div>
+
+<div id="qr"></div>
+
+<script>
+const countries = ["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
+let scene, camera, renderer, globe;
+
+function startExperience() {
+    document.getElementById("countdown").style.display = "block";
+    let count = 3;
+    const countdown = setInterval(() => {
+        document.getElementById("countdown").innerText = `🌍 Trip Revealing In ${count}...`;
+        count--;
+        if (count < 0) {
+            clearInterval(countdown);
+            document.getElementById("countdown").style.display = "none";
+            initGlobe();
+            setTimeout(revealPrize, 4000);
+        }
+    }, 1000);
+}
+
+function initGlobe() {
+    const c = document.getElementById("globeContainer");
+    c.style.display = "block";
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(300,300);
+    c.appendChild(renderer.domElement);
+
+    globe = new THREE.Mesh(
+        new THREE.SphereGeometry(2,32,32),
+        new THREE.MeshStandardMaterial({
+            map: new THREE.TextureLoader().load(
+                "https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg"
+            )
+        })
+    );
+
+    scene.add(globe);
+    camera.position.z = 5;
+    scene.add(new THREE.PointLight(0xffffff,1));
+
+    (function animate(){
+        requestAnimationFrame(animate);
+        globe.rotation.y += 0.01;
+        renderer.render(scene,camera);
+    })();
+}
+
+function revealPrize() {
+    const country = countries[Math.floor(Math.random()*countries.length)];
+
+    document.getElementById("ticket").innerHTML = `
+        <h2>🎟️ Boarding Pass</h2>
+        <p><strong>Passenger:</strong> Emoni Faith Morris</p>
+        <p><strong>Destination:</strong> ${country}</p>
+        <p><strong>Class:</strong> Queen 👑</p>
+    `;
+    document.getElementById("ticket").style.display = "block";
+    document.getElementById("message").style.display = "block";
+
+    confetti({ particleCount: 250, spread: 120 });
+
+    new QRCode(document.getElementById("qr"), {
+        text: window.location.href,
+        width: 150,
+        height: 150
+    });
+}
+</script>
+
+</body>
+</html>
