@@ -8,7 +8,7 @@
 <!-- Confetti -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<!-- Three.js for globe -->
+<!-- Three.js -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 
 <!-- QR Code -->
@@ -17,91 +17,122 @@
 <style>
 body {
     margin: 0;
-    text-align: center;
     font-family: Arial, sans-serif;
     color: white;
     overflow-x: hidden;
-
-    /* 🎂 Collage background using your GitHub folder "No subject" */
-    background-image: 
-        url('No subject/photo1.jpg'),
-        url('No subject/photo2.jpg'),
-        url('No subject/photo3.jpg'),
-        url('No subject/photo4.jpg'),
-        url('No subject/photo5.jpg'),
-        url('No subject/photo6.jpg');
-    background-size: 33% 33%;   /* each photo takes ~1/3 of width & height */
-    background-position: 
-        top left, top center, top right,
-        bottom left, bottom center;
-    background-repeat: no-repeat;
+    position: relative;
+    height: 100vh;
 }
 
+/* 🎨 Smooth Slideshow Collage Background */
+body::before {
+    content:"";
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:-2;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 2s ease-in-out;
+    opacity: 1;
+}
+
+/* Overlay to soften images */
+body::after {
+    content:"";
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:-1;
+    background: rgba(0,0,0,0.3);
+}
+
+/* Floating sparkles */
+.particle {
+    position: fixed;
+    width: 6px; height:6px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.8);
+    pointer-events:none;
+    animation: float 6s linear infinite;
+}
+@keyframes float {
+    0% { transform: translateY(0) translateX(0); opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(-600px) translateX(100px); opacity: 0; }
+}
+
+/* Header */
 h1 {
-    margin-top: 30px;
+    margin-top: 40px;
     font-size: 3em;
-    text-shadow: 0 0 15px #fff, 0 0 25px #ffcc00;
+    text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00;
+    transition: all 0.2s ease;
 }
 
+/* Button */
 button {
     margin-top: 20px;
-    padding: 18px 40px;
-    font-size: 1.2em;
+    padding: 18px 50px;
+    font-size: 1.3em;
     border: none;
-    border-radius: 40px;
-    background: #ffcc00;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #ffcc00, #ff6ec7);
     cursor: pointer;
     animation: pulse 2s infinite;
+    transition: all 0.2s ease;
 }
-
 @keyframes pulse {
-    50% { transform: scale(1.1); box-shadow: 0 0 30px #ffcc00; }
+    0% { transform: scale(1); box-shadow: 0 0 10px #fff; }
+    50% { transform: scale(1.1); box-shadow: 0 0 50px #ffcc00, 0 0 80px #ff6ec7; }
+    100% { transform: scale(1); }
 }
 
 .birthdate {
     display: block;
     font-size: 0.95em;
-    margin-top: 5px;
-    text-shadow: 0 0 20px #ffcc00;
+    margin-top: 6px;
+    text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00;
 }
 
-#countdown {
-    font-size: 2em;
-    margin-top: 20px;
-    display: none;
-}
+/* Countdown */
+#countdown { font-size: 2em; margin-top: 20px; display: none; }
 
-#globeContainer {
-    width: 300px;
-    height: 300px;
-    margin: 30px auto;
-    display: none;
-}
+/* Globe */
+#globeContainer { width: 300px; height: 300px; margin: 30px auto; display: none; }
 
+/* Ticket */
 #ticket {
     display: none;
-    background: white;
+    background: rgba(255,255,255,0.95);
     color: black;
     margin: 30px auto;
     padding: 20px;
     width: 90%;
     max-width: 350px;
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(255,204,0,0.8);
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 1s ease;
 }
+#ticket.show { transform: translateY(0); opacity:1; }
 
-#ticket h2 { margin: 0; }
-
+/* Personal message */
 #message {
     display: none;
     font-size: 1.3em;
     margin: 25px;
     color: #ffccdd;
+    animation: fadeIn 1.5s forwards;
+}
+@keyframes fadeIn {
+    0% { opacity:0; transform: translateY(20px);}
+    100%{ opacity:1; transform: translateY(0);}
 }
 
-#qr {
-    margin-top: 25px;
-}
+/* QR code */
+#qr { margin-top:25px; }
 </style>
 </head>
 
@@ -116,92 +147,122 @@ button {
 
 <div id="countdown"></div>
 
-<!-- 🎵 Background song -->
-<iframe width="0" height="0"
-src="https://www.youtube.com/embed/O9rk6ldyFkA?autoplay=1&loop=1&playlist=O9rk6ldyFkA"
-allow="autoplay"></iframe>
+<!-- Background Song -->
+<audio id="bgMusic" autoplay loop src="https://www.youtube.com/embed/O9rk6ldyFkA" type="audio/mpeg"></audio>
 
 <div id="globeContainer"></div>
-
 <div id="ticket"></div>
-
 <div id="message">
 💖 I love you baby girl you deserve the world.<br>
 I hope all your wishes come true my queen ❤️
 </div>
-
 <div id="qr"></div>
 
 <script>
-const countries = ["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
-let scene, camera, renderer, globe;
+/* 🌟 Smooth Collage Slideshow */
+const collageImages = [
+    'No subject/photo1.jpg',
+    'No subject/photo2.jpg',
+    'No subject/photo3.jpg',
+    'No subject/photo4.jpg',
+    'No subject/photo5.jpg',
+    'No subject/photo6.jpg'
+];
+let bgIndex = 0;
+const bodyBg = document.body;
+function nextBackground(){
+    bodyBg.style.opacity = 0;
+    setTimeout(()=>{
+        bodyBg.style.backgroundImage = `url(${collageImages[bgIndex]})`;
+        bgIndex = (bgIndex +1)%collageImages.length;
+        bodyBg.style.opacity = 1;
+    },500);
+}
+nextBackground();
+setInterval(nextBackground,5000);
 
-function startExperience() {
-    document.getElementById("countdown").style.display = "block";
-    let count = 3;
-    const countdown = setInterval(() => {
-        document.getElementById("countdown").innerText = `🌍 Trip Revealing In ${count}...`;
-        count--;
-        if (count < 0) {
-            clearInterval(countdown);
-            document.getElementById("countdown").style.display = "none";
-            initGlobe();
-            setTimeout(revealPrize, 4000);
-        }
-    }, 1000);
+/* 🌌 Floating Particles with music beat */
+const particles = [];
+for(let i=0;i<60;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.width=p.style.height=(3+Math.random()*5)+'px';
+    p.style.animationDuration=(4+Math.random()*5)+'s';
+    document.body.appendChild(p);
+    particles.push(p);
 }
 
-function initGlobe() {
-    const c = document.getElementById("globeContainer");
-    c.style.display = "block";
+/* Simple beat pulse effect (approximate) */
+const button = document.querySelector('button');
+const h1 = document.querySelector('h1');
+setInterval(()=>{
+    // Pulse glow effect to simulate music beat
+    button.style.transform = 'scale(1.1)';
+    h1.style.textShadow='0 0 30px #fff,0 0 60px #ffcc00';
+    setTimeout(()=>{
+        button.style.transform='scale(1)';
+        h1.style.textShadow='0 0 20px #fff,0 0 30px #ffcc00';
+    },300);
+},600); // pulse approx every 0.6s (adjust to match beat)
 
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer({ alpha: true });
+/* Globe + Ticket */
+const countries = ["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
+let scene,camera,renderer,globe;
+
+function startExperience() {
+    document.getElementById("countdown").style.display="block";
+    let count=3;
+    const countdown=setInterval(()=>{
+        document.getElementById("countdown").innerText=`🌍 Trip Revealing In ${count}...`;
+        count--;
+        if(count<0){
+            clearInterval(countdown);
+            document.getElementById("countdown").style.display="none";
+            initGlobe();
+            setTimeout(revealPrize,4000);
+        }
+    },1000);
+}
+
+function initGlobe(){
+    const c=document.getElementById("globeContainer");
+    c.style.display="block";
+    scene=new THREE.Scene();
+    camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
+    renderer=new THREE.WebGLRenderer({alpha:true});
     renderer.setSize(300,300);
     c.appendChild(renderer.domElement);
 
-    globe = new THREE.Mesh(
+    globe=new THREE.Mesh(
         new THREE.SphereGeometry(2,32,32),
-        new THREE.MeshStandardMaterial({
-            map: new THREE.TextureLoader().load(
-                "https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg"
-            )
-        })
+        new THREE.MeshStandardMaterial({map:new THREE.TextureLoader().load("https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg")})
     );
-
     scene.add(globe);
-    camera.position.z = 5;
+    camera.position.z=5;
     scene.add(new THREE.PointLight(0xffffff,1));
 
     (function animate(){
         requestAnimationFrame(animate);
-        globe.rotation.y += 0.01;
+        globe.rotation.y+=0.008;
         renderer.render(scene,camera);
     })();
 }
 
-function revealPrize() {
-    const country = countries[Math.floor(Math.random()*countries.length)];
-
-    document.getElementById("ticket").innerHTML = `
-        <h2>🎟️ Boarding Pass</h2>
+function revealPrize(){
+    const country=countries[Math.floor(Math.random()*countries.length)];
+    const ticket=document.getElementById("ticket");
+    ticket.innerHTML=`<h2>🎟️ Boarding Pass</h2>
         <p><strong>Passenger:</strong> Emoni Faith Morris</p>
         <p><strong>Destination:</strong> ${country}</p>
-        <p><strong>Class:</strong> Queen 👑</p>
-    `;
-    document.getElementById("ticket").style.display = "block";
-    document.getElementById("message").style.display = "block";
+        <p><strong>Class:</strong> Queen 👑</p>`;
+    ticket.classList.add('show');
+    document.getElementById("message").style.display="block";
 
-    confetti({ particleCount: 250, spread: 120 });
+    confetti({particleCount:400,spread:160,gravity:0.8,ticks:250,colors:['#ffcc00','#ff6ec7','#6e9cff'],shapes:['circle','star']});
 
-    new QRCode(document.getElementById("qr"), {
-        text: window.location.href,
-        width: 150,
-        height: 150
-    });
+    new QRCode(document.getElementById("qr"),{text:window.location.href,width:150,height:150});
 }
 </script>
-
 </body>
 </html>
