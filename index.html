@@ -15,45 +15,51 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
+/* === General Styles === */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     color: white;
-    overflow-x: hidden;
     text-align: center;
+    overflow-x: hidden;
+    min-height: 100vh;
     position: relative;
-    height: 100vh;
-    background-color: black;
+    background: #000; /* fallback black */
 }
 
-/* Smooth Slideshow Collage Background */
-body::before {
-    content:"";
+/* === Dynamic Flag Background === */
+#flagBackground {
     position: fixed;
     top:0; left:0;
-    width:100%; height:100%;
-    z-index:-2;
-    background-size: cover;
-    background-position: center;
+    width:100%;
+    height:100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-auto-rows: 80px;
+    z-index: -2;
+    opacity: 0.9;
     transition: opacity 2s ease-in-out;
-    opacity: 1;
+}
+#flagBackground img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* Overlay to soften images */
+/* Overlay to soften flags */
 body::after {
     content:"";
     position: fixed;
     top:0; left:0;
     width:100%; height:100%;
     z-index:-1;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.35);
 }
 
-/* Floating sparkles */
+/* === Floating Sparkles === */
 .particle {
     position: fixed;
-    width: 6px; height:6px;
     border-radius:50%;
     background: rgba(255,255,255,0.8);
     pointer-events:none;
@@ -66,18 +72,20 @@ body::after {
     100% { transform: translateY(-600px) translateX(100px); opacity: 0; }
 }
 
+/* === Header === */
 h1 {
-    margin-top: 40px;
-    font-size: 3em;
-    text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00;
+    margin-top: 30px;
+    font-size: 2.5em;
+    text-shadow: 0 0 25px #fff, 0 0 40px #ffcc00;
     position: relative;
     z-index: 10;
 }
 
+/* === Button === */
 button {
     margin-top: 20px;
-    padding: 18px 50px;
-    font-size: 1.3em;
+    padding: 15px 35px;
+    font-size: 1.2em;
     border: none;
     border-radius: 50px;
     background: linear-gradient(45deg, #ffcc00, #ff6ec7);
@@ -86,39 +94,39 @@ button {
     transition: all 0.2s ease;
     position: relative;
     z-index: 10;
+    word-break: break-word;
 }
 @keyframes pulse {
     0% { transform: scale(1); box-shadow: 0 0 10px #fff; }
     50% { transform: scale(1.1); box-shadow: 0 0 50px #ffcc00, 0 0 80px #ff6ec7; }
     100% { transform: scale(1); }
 }
+.birthdate { display: block; font-size: 0.85em; margin-top: 5px; text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00; }
 
-.birthdate {
-    display: block;
-    font-size: 0.95em;
-    margin-top: 6px;
-    text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00;
-}
+/* === Countdown === */
+#countdown { font-size: 1.8em; margin-top: 20px; display: none; }
 
-#countdown { font-size: 2em; margin-top: 20px; display: none; }
-
+/* === Globe Container === */
 #globeContainer {
-    width: 300px;
-    height: 300px;
-    margin: 30px auto;
+    width: 90vw;
+    max-width: 350px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    margin: 20px auto;
     display: none;
 }
 
+/* === Ticket === */
 #ticket {
     display: none;
     background: rgba(255,255,255,0.95);
     color: black;
-    margin: 30px auto;
+    margin: 20px auto;
     padding: 20px;
     width: 90%;
     max-width: 350px;
-    border-radius: 20px;
-    box-shadow: 0 0 50px rgba(255,204,0,0.8);
+    border-radius: 25px;
+    box-shadow: 0 0 60px rgba(255,204,0,0.9);
     transform: translateY(-50px);
     opacity: 0;
     transition: all 1s ease;
@@ -127,10 +135,11 @@ button {
 }
 #ticket.show { transform: translateY(0); opacity:1; }
 
+/* === Personal Message === */
 #message {
     display: none;
-    font-size: 1.3em;
-    margin: 25px;
+    font-size: 1.2em;
+    margin: 15px;
     color: #ffccdd;
     animation: fadeIn 1.5s forwards;
     position: relative;
@@ -141,11 +150,35 @@ button {
     100%{ opacity:1; transform: translateY(0);}
 }
 
-#qr { margin-top:25px; position: relative; z-index: 10;}
+/* === QR Code === */
+#qr { margin-top:20px; position: relative; z-index: 10; }
+
+/* === Mobile Adjustments === */
+@media screen and (max-width: 400px) {
+    h1 { font-size: 2em; }
+    button { font-size: 1em; padding: 12px 25px; }
+    #message { font-size: 1em; }
+    #countdown { font-size: 1.5em; }
+}
 </style>
 </head>
 
 <body>
+
+<!-- Flag Background -->
+<div id="flagBackground">
+  <!-- Add your African + Caribbean flags here -->
+  <img src="flags/nigeria.png">
+  <img src="flags/ghana.png">
+  <img src="flags/jamaica.png">
+  <img src="flags/barbados.png">
+  <img src="flags/trinidad.png">
+  <img src="flags/cuba.png">
+  <img src="flags/bahamas.png">
+  <img src="flags/kenya.png">
+  <img src="flags/ethiopia.png">
+  <!-- Add the rest -->
+</div>
 
 <h1>🎉 HAPPY BIRTHDAY <br> EMONI FAITH MORRIS 🎉</h1>
 
@@ -170,124 +203,107 @@ I hope all your wishes come true my queen ❤️
 <div id="qr"></div>
 
 <script>
-/* Smooth Collage Slideshow */
-const collageImages = [
-    'No subject/photo1.jpg',
-    'No subject/photo2.jpg',
-    'No subject/photo3.jpg',
-    'No subject/photo4.jpg',
-    'No subject/photo5.jpg',
-    'No subject/photo6.jpg'
-];
-let bgIndex = 0;
-const bodyBg = document.body;
-function nextBackground(){
-    bodyBg.style.opacity = 0;
-    setTimeout(()=>{
-        bodyBg.style.backgroundImage = `url(${collageImages[bgIndex]})`;
-        bgIndex = (bgIndex +1)%collageImages.length;
-        bodyBg.style.opacity = 1;
-    },500);
-}
-nextBackground();
-setInterval(nextBackground,5000);
-
-/* Floating Particles */
-const particles = [];
+/* === Floating particles === */
 for(let i=0;i<60;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    p.style.left=Math.random()*100+'%';
-    p.style.width=p.style.height=(3+Math.random()*5)+'px';
-    p.style.animationDuration=(4+Math.random()*5)+'s';
-    document.body.appendChild(p);
-    particles.push(p);
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.width=p.style.height=(3+Math.random()*5)+'px';
+  p.style.animationDuration=(4+Math.random()*5)+'s';
+  document.body.appendChild(p);
 }
 
-/* Beat-synced glow (approximate) */
+/* === Button & Header Pulse === */
 const button = document.querySelector('button');
 const h1 = document.querySelector('h1');
 setInterval(()=>{
-    button.style.transform = 'scale(1.1)';
-    h1.style.textShadow='0 0 30px #fff,0 0 60px #ffcc00';
-    setTimeout(()=>{
-        button.style.transform='scale(1)';
-        h1.style.textShadow='0 0 20px #fff,0 0 30px #ffcc00';
-    },300);
+  button.style.transform='scale(1.1)';
+  h1.style.textShadow='0 0 30px #fff,0 0 60px #ffcc00';
+  setTimeout(()=>{
+    button.style.transform='scale(1)';
+    h1.style.textShadow='0 0 20px #fff,0 0 30px #ffcc00';
+  },300);
 },600);
 
-/* Globe + Ticket */
-const countries = ["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
+/* === Globe + Prize === */
+const countries=["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
 let scene,camera,renderer,globe;
 
-function startExperience() {
-    document.getElementById("countdown").style.display="block";
-    let count=3;
-    const countdown=setInterval(()=>{
-        document.getElementById("countdown").innerText=`🌍 Trip Revealing In ${count}...`;
-        count--;
-        if(count<0){
-            clearInterval(countdown);
-            document.getElementById("countdown").style.display="none";
-            initGlobe();
-            setTimeout(revealPrize,4000);
-        }
-    },1000);
+function startExperience(){
+  document.getElementById("countdown").style.display="block";
+  let count=3;
+  const countdown=setInterval(()=>{
+    document.getElementById("countdown").innerText=`🌍 Trip Revealing In ${count}...`;
+    count--;
+    if(count<0){
+      clearInterval(countdown);
+      document.getElementById("countdown").style.display="none";
+      initGlobe();
+      setTimeout(revealPrize,4000);
+    }
+  },1000);
 }
 
 function initGlobe(){
-    const c=document.getElementById("globeContainer");
-    c.style.display="block";
-    scene=new THREE.Scene();
-    camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
-    renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  const c=document.getElementById("globeContainer");
+  c.style.display="block";
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(75,c.offsetWidth/c.offsetHeight,0.1,1000);
+  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setSize(c.offsetWidth,c.offsetHeight);
+  c.appendChild(renderer.domElement);
+
+  globe=new THREE.Mesh(
+    new THREE.SphereGeometry(2,32,32),
+    new THREE.MeshStandardMaterial({
+      map: new THREE.TextureLoader().load('textures/land_ocean_ice_cloud_2048.jpg')
+    })
+  );
+  scene.add(globe);
+
+  const light=new THREE.PointLight(0xffffff,1);
+  light.position.set(5,5,5);
+  scene.add(light);
+
+  camera.position.z=5;
+
+  window.addEventListener('resize',()=>{
     renderer.setSize(c.offsetWidth,c.offsetHeight);
-    c.appendChild(renderer.domElement);
+    camera.aspect=c.offsetWidth/c.offsetHeight;
+    camera.updateProjectionMatrix();
+  });
 
-    // Use local texture to avoid black globe
-    globe=new THREE.Mesh(
-        new THREE.SphereGeometry(2,32,32),
-        new THREE.MeshStandardMaterial({
-            map: new THREE.TextureLoader().load('textures/land_ocean_ice_cloud_2048.jpg')
-        })
-    );
-    scene.add(globe);
-    camera.position.z=5;
-    const light=new THREE.PointLight(0xffffff,1);
-    light.position.set(5,5,5);
-    scene.add(light);
-
-    (function animate(){
-        requestAnimationFrame(animate);
-        globe.rotation.y+=0.008;
-        renderer.render(scene,camera);
-    })();
+  (function animate(){
+    requestAnimationFrame(animate);
+    globe.rotation.y+=0.008;
+    renderer.render(scene,camera);
+  })();
 }
 
 function revealPrize(){
-    const country=countries[Math.floor(Math.random()*countries.length)];
-    const ticket=document.getElementById("ticket");
-    ticket.innerHTML=`<h2>🎟️ Boarding Pass</h2>
-        <p><strong>Passenger:</strong> Emoni Faith Morris</p>
-        <p><strong>Destination:</strong> ${country}</p>
-        <p><strong>Class:</strong> Queen 👑</p>`;
-    ticket.classList.add('show');
-    document.getElementById("message").style.display="block";
+  const country=countries[Math.floor(Math.random()*countries.length)];
+  const ticket=document.getElementById("ticket");
+  ticket.innerHTML=`<h2>🎟️ Boarding Pass</h2>
+    <p><strong>Passenger:</strong> Emoni Faith Morris</p>
+    <p><strong>Destination:</strong> ${country}</p>
+    <p><strong>Class:</strong> Queen 👑</p>`;
+  ticket.classList.add('show');
+  document.getElementById("message").style.display="block";
 
-    confetti({
-        particleCount:400,
-        spread:160,
-        gravity:0.8,
-        ticks:250,
-        colors:['#ffcc00','#ff6ec7','#6e9cff'],
-        shapes:['circle','star']
-    });
+  confetti({
+    particleCount:400,
+    spread:160,
+    gravity:0.8,
+    ticks:250,
+    colors:['#ffcc00','#ff6ec7','#6e9cff'],
+    shapes:['circle','star']
+  });
 
-    new QRCode(document.getElementById("qr"),{
-        text:window.location.href,
-        width:150,
-        height:150
-    });
+  new QRCode(document.getElementById("qr"),{
+    text:window.location.href,
+    width:150,
+    height:150
+  });
 }
 </script>
 </body>
