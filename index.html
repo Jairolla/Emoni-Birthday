@@ -9,17 +9,16 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
-/* === Body & Theme === */
+/* === Body Emerald Theme === */
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     color: white;
     text-align: center;
-    overflow-x: hidden;
     min-height: 100vh;
-    position: relative;
-    background: linear-gradient(135deg, #046307, #2ecc71); /* emerald green gradient */
+    background: linear-gradient(135deg, #046307, #2ecc71);
+    overflow-x: hidden;
 }
 
 /* === Floating Sparkles === */
@@ -42,7 +41,6 @@ h1 {
     margin-top: 30px;
     font-size: 2.5em;
     text-shadow: 0 0 25px #fff, 0 0 40px #a2f5a2;
-    position: relative;
     z-index: 10;
 }
 
@@ -57,27 +55,17 @@ button {
     cursor: pointer;
     animation: pulse 2s infinite;
     transition: all 0.2s ease;
-    position: relative;
     z-index: 10;
-    word-break: break-word;
 }
 @keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 10px #fff; }
-    50% { transform: scale(1.1); box-shadow: 0 0 50px #1abc9c, 0 0 80px #27ae60; }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
-.birthdate { display: block; font-size: 0.85em; margin-top: 5px; text-shadow: 0 0 20px #fff, 0 0 30px #a2f5a2; }
+.birthdate { font-size: 0.85em; text-shadow: 0 0 20px #fff, 0 0 30px #a2f5a2; }
 
-/* === Countdown Container === */
-#countdown {
-    font-size: 2em;
-    margin-top: 20px;
-    display: none;
-    position: relative;
-    z-index: 10;
-}
-
-/* === Cat Image === */
+/* === Countdown & Cat === */
+#countdown { font-size: 2em; margin-top: 20px; display: none; }
 #cat {
     display: none;
     width: 150px;
@@ -87,7 +75,7 @@ button {
 }
 @keyframes bounce {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-15px); }
+    100% { transform: translateY(-10px); }
 }
 
 /* === Ticket === */
@@ -96,38 +84,34 @@ button {
     background: rgba(255,255,255,0.95);
     color: black;
     margin: 20px auto;
-    padding: 20px;
+    padding: 25px;
     width: 90%;
-    max-width: 300px;
+    max-width: 350px;
     border-radius: 25px;
-    box-shadow: 0 0 50px rgba(0,255,0,0.9);
-    transform: translateY(-50px);
+    box-shadow: 0 10px 50px rgba(0,255,0,0.8);
+    transform: translateY(30px);
     opacity: 0;
-    transition: all 0.8s ease;
-    position: relative;
-    z-index: 10;
-    font-weight: bold;
+    transition: all 1s ease;
     text-align: left;
+    font-weight: bold;
 }
 #ticket.show {
-    transform: translateY(0);
+    display: block;
     opacity: 1;
+    transform: translateY(0);
 }
 
 /* === Personal Message === */
 #message {
     display: none;
     font-size: 1.2em;
-    margin: 15px;
+    margin: 20px;
     color: #dfffd6;
-    animation: fadeIn 1.5s forwards;
-    position: relative;
-    z-index: 10;
+    text-align: center;
+    line-height: 1.4em;
+    transition: opacity 1s ease;
 }
-@keyframes fadeIn {
-    0% { opacity:0; transform: translateY(20px);}
-    100%{ opacity:1; transform: translateY(0);}
-}
+#message.show { display:block; opacity: 1; }
 
 /* === Mobile Adjustments === */
 @media screen and (max-width: 400px) {
@@ -135,6 +119,7 @@ button {
     button { font-size: 1em; padding: 12px 25px; }
     #message { font-size: 1em; }
     #countdown { font-size: 1.5em; }
+    #ticket { padding: 20px; }
 }
 </style>
 </head>
@@ -144,27 +129,25 @@ button {
 <h1>🎉 HAPPY BIRTHDAY <br> EMONI FAITH MORRIS 🎉</h1>
 
 <button onclick="startCountdown()">
-    Please Click Here
+    Please Click Here<br>
     <span class="birthdate">01 / 04 / 1999</span>
 </button>
 
 <div id="countdown"></div>
-<img id="cat" src="https://i.imgur.com/f0aZt9T.png" alt="Black Cat">
+
+<!-- Local black cat image -->
+<img id="cat" src="cat.png" alt="Cute Black Cat">
 
 <div id="ticket"></div>
+
 <div id="message">
 💖 I love you baby girl you deserve the world.<br>
 I hope all your wishes come true my queen ❤️
 </div>
 
-<!-- Background Music -->
-<audio id="bgMusic" autoplay loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-
 <script>
-/* Floating particles */
-for(let i=0;i<60;i++){
+// Floating sparkles
+for(let i=0; i<60; i++){
   const p=document.createElement('div');
   p.className='particle';
   p.style.left=Math.random()*100+'%';
@@ -173,19 +156,7 @@ for(let i=0;i<60;i++){
   document.body.appendChild(p);
 }
 
-/* Button & Header Pulse */
-const button = document.querySelector('button');
-const h1 = document.querySelector('h1');
-setInterval(()=>{
-  button.style.transform='scale(1.1)';
-  h1.style.textShadow='0 0 30px #fff,0 0 60px #a2f5a2';
-  setTimeout(()=>{
-    button.style.transform='scale(1)';
-    h1.style.textShadow='0 0 20px #fff,0 0 30px #a2f5a2';
-  },300);
-},600);
-
-/* === Countdown & Cat === */
+// Countdown logic
 function startCountdown(){
     const countdownEl = document.getElementById("countdown");
     const catEl = document.getElementById("cat");
@@ -196,7 +167,7 @@ function startCountdown(){
     countdownEl.innerText = `🎉 ${count} 🎉`;
     const interval = setInterval(()=>{
         count--;
-        if(count>0){
+        if(count > 0){
             countdownEl.innerText = `🎉 ${count} 🎉`;
         } else {
             clearInterval(interval);
@@ -207,7 +178,7 @@ function startCountdown(){
     },1000);
 }
 
-/* === Reveal Ticket + Confetti === */
+// Reveal ticket
 function revealTicket(){
     const ticket = document.getElementById("ticket");
     ticket.innerHTML = `
@@ -217,7 +188,8 @@ function revealTicket(){
     <p><strong>Class:</strong> Queen 👑</p>`;
     ticket.classList.add('show');
 
-    document.getElementById("message").style.display="block";
+    const msg = document.getElementById("message");
+    msg.classList.add('show');
 
     confetti({
         particleCount: 400,
@@ -232,3 +204,4 @@ function revealTicket(){
 
 </body>
 </html>
+
