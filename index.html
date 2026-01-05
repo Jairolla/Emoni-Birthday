@@ -8,53 +8,18 @@
 <!-- Confetti -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<!-- Three.js -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-
-<!-- QR Code -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-
 <style>
-/* === General Styles === */
+/* === Body & Theme === */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     color: white;
     text-align: center;
     overflow-x: hidden;
     min-height: 100vh;
     position: relative;
-    background: #000; /* fallback black */
-}
-
-/* === Dynamic Flag Background === */
-#flagBackground {
-    position: fixed;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    grid-auto-rows: 80px;
-    z-index: -2;
-    opacity: 0.9;
-    transition: opacity 2s ease-in-out;
-}
-#flagBackground img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Overlay to soften flags */
-body::after {
-    content:"";
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    z-index:-1;
-    background: rgba(0,0,0,0.35);
+    background: linear-gradient(135deg, #046307, #2ecc71); /* emerald green gradient */
 }
 
 /* === Floating Sparkles === */
@@ -76,7 +41,7 @@ body::after {
 h1 {
     margin-top: 30px;
     font-size: 2.5em;
-    text-shadow: 0 0 25px #fff, 0 0 40px #ffcc00;
+    text-shadow: 0 0 25px #fff, 0 0 40px #a2f5a2;
     position: relative;
     z-index: 10;
 }
@@ -88,7 +53,7 @@ button {
     font-size: 1.2em;
     border: none;
     border-radius: 50px;
-    background: linear-gradient(45deg, #ffcc00, #ff6ec7);
+    background: linear-gradient(45deg, #1abc9c, #27ae60);
     cursor: pointer;
     animation: pulse 2s infinite;
     transition: all 0.2s ease;
@@ -98,22 +63,31 @@ button {
 }
 @keyframes pulse {
     0% { transform: scale(1); box-shadow: 0 0 10px #fff; }
-    50% { transform: scale(1.1); box-shadow: 0 0 50px #ffcc00, 0 0 80px #ff6ec7; }
+    50% { transform: scale(1.1); box-shadow: 0 0 50px #1abc9c, 0 0 80px #27ae60; }
     100% { transform: scale(1); }
 }
-.birthdate { display: block; font-size: 0.85em; margin-top: 5px; text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00; }
+.birthdate { display: block; font-size: 0.85em; margin-top: 5px; text-shadow: 0 0 20px #fff, 0 0 30px #a2f5a2; }
 
-/* === Countdown === */
-#countdown { font-size: 1.8em; margin-top: 20px; display: none; }
-
-/* === Globe Container === */
-#globeContainer {
-    width: 90vw;
-    max-width: 350px;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    margin: 20px auto;
+/* === Countdown Container === */
+#countdown {
+    font-size: 2em;
+    margin-top: 20px;
     display: none;
+    position: relative;
+    z-index: 10;
+}
+
+/* === Cat Image === */
+#cat {
+    display: none;
+    width: 150px;
+    max-width: 40%;
+    margin: 20px auto;
+    animation: bounce 1s infinite alternate;
+}
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-15px); }
 }
 
 /* === Ticket === */
@@ -124,23 +98,28 @@ button {
     margin: 20px auto;
     padding: 20px;
     width: 90%;
-    max-width: 350px;
+    max-width: 300px;
     border-radius: 25px;
-    box-shadow: 0 0 60px rgba(255,204,0,0.9);
+    box-shadow: 0 0 50px rgba(0,255,0,0.9);
     transform: translateY(-50px);
     opacity: 0;
-    transition: all 1s ease;
+    transition: all 0.8s ease;
     position: relative;
     z-index: 10;
+    font-weight: bold;
+    text-align: left;
 }
-#ticket.show { transform: translateY(0); opacity:1; }
+#ticket.show {
+    transform: translateY(0);
+    opacity: 1;
+}
 
 /* === Personal Message === */
 #message {
     display: none;
     font-size: 1.2em;
     margin: 15px;
-    color: #ffccdd;
+    color: #dfffd6;
     animation: fadeIn 1.5s forwards;
     position: relative;
     z-index: 10;
@@ -149,9 +128,6 @@ button {
     0% { opacity:0; transform: translateY(20px);}
     100%{ opacity:1; transform: translateY(0);}
 }
-
-/* === QR Code === */
-#qr { margin-top:20px; position: relative; z-index: 10; }
 
 /* === Mobile Adjustments === */
 @media screen and (max-width: 400px) {
@@ -165,45 +141,29 @@ button {
 
 <body>
 
-<!-- Flag Background -->
-<div id="flagBackground">
-  <!-- Add your African + Caribbean flags here -->
-  <img src="flags/nigeria.png">
-  <img src="flags/ghana.png">
-  <img src="flags/jamaica.png">
-  <img src="flags/barbados.png">
-  <img src="flags/trinidad.png">
-  <img src="flags/cuba.png">
-  <img src="flags/bahamas.png">
-  <img src="flags/kenya.png">
-  <img src="flags/ethiopia.png">
-  <!-- Add the rest -->
-</div>
-
 <h1>🎉 HAPPY BIRTHDAY <br> EMONI FAITH MORRIS 🎉</h1>
 
-<button onclick="startExperience()">
+<button onclick="startCountdown()">
     Please Click Here
     <span class="birthdate">01 / 04 / 1999</span>
 </button>
 
 <div id="countdown"></div>
+<img id="cat" src="https://i.imgur.com/f0aZt9T.png" alt="Black Cat">
 
-<!-- Background Song -->
-<audio id="bgMusic" autoplay loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-
-<div id="globeContainer"></div>
 <div id="ticket"></div>
 <div id="message">
 💖 I love you baby girl you deserve the world.<br>
 I hope all your wishes come true my queen ❤️
 </div>
-<div id="qr"></div>
+
+<!-- Background Music -->
+<audio id="bgMusic" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-/* === Floating particles === */
+/* Floating particles */
 for(let i=0;i<60;i++){
   const p=document.createElement('div');
   p.className='particle';
@@ -213,98 +173,62 @@ for(let i=0;i<60;i++){
   document.body.appendChild(p);
 }
 
-/* === Button & Header Pulse === */
+/* Button & Header Pulse */
 const button = document.querySelector('button');
 const h1 = document.querySelector('h1');
 setInterval(()=>{
   button.style.transform='scale(1.1)';
-  h1.style.textShadow='0 0 30px #fff,0 0 60px #ffcc00';
+  h1.style.textShadow='0 0 30px #fff,0 0 60px #a2f5a2';
   setTimeout(()=>{
     button.style.transform='scale(1)';
-    h1.style.textShadow='0 0 20px #fff,0 0 30px #ffcc00';
+    h1.style.textShadow='0 0 20px #fff,0 0 30px #a2f5a2';
   },300);
 },600);
 
-/* === Globe + Prize === */
-const countries=["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
-let scene,camera,renderer,globe;
+/* === Countdown & Cat === */
+function startCountdown(){
+    const countdownEl = document.getElementById("countdown");
+    const catEl = document.getElementById("cat");
+    countdownEl.style.display="block";
+    catEl.style.display="block";
 
-function startExperience(){
-  document.getElementById("countdown").style.display="block";
-  let count=3;
-  const countdown=setInterval(()=>{
-    document.getElementById("countdown").innerText=`🌍 Trip Revealing In ${count}...`;
-    count--;
-    if(count<0){
-      clearInterval(countdown);
-      document.getElementById("countdown").style.display="none";
-      initGlobe();
-      setTimeout(revealPrize,4000);
-    }
-  },1000);
+    let count = 3;
+    countdownEl.innerText = `🎉 ${count} 🎉`;
+    const interval = setInterval(()=>{
+        count--;
+        if(count>0){
+            countdownEl.innerText = `🎉 ${count} 🎉`;
+        } else {
+            clearInterval(interval);
+            countdownEl.style.display="none";
+            catEl.style.display="none";
+            revealTicket();
+        }
+    },1000);
 }
 
-function initGlobe(){
-  const c=document.getElementById("globeContainer");
-  c.style.display="block";
-  scene=new THREE.Scene();
-  camera=new THREE.PerspectiveCamera(75,c.offsetWidth/c.offsetHeight,0.1,1000);
-  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
-  renderer.setSize(c.offsetWidth,c.offsetHeight);
-  c.appendChild(renderer.domElement);
-
-  globe=new THREE.Mesh(
-    new THREE.SphereGeometry(2,32,32),
-    new THREE.MeshStandardMaterial({
-      map: new THREE.TextureLoader().load('textures/land_ocean_ice_cloud_2048.jpg')
-    })
-  );
-  scene.add(globe);
-
-  const light=new THREE.PointLight(0xffffff,1);
-  light.position.set(5,5,5);
-  scene.add(light);
-
-  camera.position.z=5;
-
-  window.addEventListener('resize',()=>{
-    renderer.setSize(c.offsetWidth,c.offsetHeight);
-    camera.aspect=c.offsetWidth/c.offsetHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  (function animate(){
-    requestAnimationFrame(animate);
-    globe.rotation.y+=0.008;
-    renderer.render(scene,camera);
-  })();
-}
-
-function revealPrize(){
-  const country=countries[Math.floor(Math.random()*countries.length)];
-  const ticket=document.getElementById("ticket");
-  ticket.innerHTML=`<h2>🎟️ Boarding Pass</h2>
-    <p><strong>Passenger:</strong> Emoni Faith Morris</p>
-    <p><strong>Destination:</strong> ${country}</p>
+/* === Reveal Ticket + Confetti === */
+function revealTicket(){
+    const ticket = document.getElementById("ticket");
+    ticket.innerHTML = `
+    <h2>🎟️ Birthday Gift</h2>
+    <p><strong>Recipient:</strong> Emoni Faith Morris</p>
+    <p><strong>Gift:</strong> A trip to anywhere you wish! 🌍</p>
     <p><strong>Class:</strong> Queen 👑</p>`;
-  ticket.classList.add('show');
-  document.getElementById("message").style.display="block";
+    ticket.classList.add('show');
 
-  confetti({
-    particleCount:400,
-    spread:160,
-    gravity:0.8,
-    ticks:250,
-    colors:['#ffcc00','#ff6ec7','#6e9cff'],
-    shapes:['circle','star']
-  });
+    document.getElementById("message").style.display="block";
 
-  new QRCode(document.getElementById("qr"),{
-    text:window.location.href,
-    width:150,
-    height:150
-  });
+    confetti({
+        particleCount: 400,
+        spread: 160,
+        gravity: 0.8,
+        ticks: 250,
+        colors: ['#1abc9c','#2ecc71','#046307'],
+        shapes: ['circle','star']
+    });
 }
 </script>
+
 </body>
 </html>
