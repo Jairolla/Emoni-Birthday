@@ -17,14 +17,17 @@
 <style>
 body {
     margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
     color: white;
     overflow-x: hidden;
+    text-align: center;
     position: relative;
     height: 100vh;
+    background-color: black;
 }
 
-/* 🎨 Smooth Slideshow Collage Background */
+/* Smooth Slideshow Collage Background */
 body::before {
     content:"";
     position: fixed;
@@ -54,6 +57,7 @@ body::after {
     border-radius:50%;
     background: rgba(255,255,255,0.8);
     pointer-events:none;
+    z-index:1;
     animation: float 6s linear infinite;
 }
 @keyframes float {
@@ -62,15 +66,14 @@ body::after {
     100% { transform: translateY(-600px) translateX(100px); opacity: 0; }
 }
 
-/* Header */
 h1 {
     margin-top: 40px;
     font-size: 3em;
     text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00;
-    transition: all 0.2s ease;
+    position: relative;
+    z-index: 10;
 }
 
-/* Button */
 button {
     margin-top: 20px;
     padding: 18px 50px;
@@ -81,6 +84,8 @@ button {
     cursor: pointer;
     animation: pulse 2s infinite;
     transition: all 0.2s ease;
+    position: relative;
+    z-index: 10;
 }
 @keyframes pulse {
     0% { transform: scale(1); box-shadow: 0 0 10px #fff; }
@@ -95,13 +100,15 @@ button {
     text-shadow: 0 0 20px #fff, 0 0 30px #ffcc00;
 }
 
-/* Countdown */
 #countdown { font-size: 2em; margin-top: 20px; display: none; }
 
-/* Globe */
-#globeContainer { width: 300px; height: 300px; margin: 30px auto; display: none; }
+#globeContainer {
+    width: 300px;
+    height: 300px;
+    margin: 30px auto;
+    display: none;
+}
 
-/* Ticket */
 #ticket {
     display: none;
     background: rgba(255,255,255,0.95);
@@ -115,24 +122,26 @@ button {
     transform: translateY(-50px);
     opacity: 0;
     transition: all 1s ease;
+    position: relative;
+    z-index: 10;
 }
 #ticket.show { transform: translateY(0); opacity:1; }
 
-/* Personal message */
 #message {
     display: none;
     font-size: 1.3em;
     margin: 25px;
     color: #ffccdd;
     animation: fadeIn 1.5s forwards;
+    position: relative;
+    z-index: 10;
 }
 @keyframes fadeIn {
     0% { opacity:0; transform: translateY(20px);}
     100%{ opacity:1; transform: translateY(0);}
 }
 
-/* QR code */
-#qr { margin-top:25px; }
+#qr { margin-top:25px; position: relative; z-index: 10;}
 </style>
 </head>
 
@@ -148,7 +157,9 @@ button {
 <div id="countdown"></div>
 
 <!-- Background Song -->
-<audio id="bgMusic" autoplay loop src="https://www.youtube.com/embed/O9rk6ldyFkA" type="audio/mpeg"></audio>
+<audio id="bgMusic" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
 
 <div id="globeContainer"></div>
 <div id="ticket"></div>
@@ -159,7 +170,7 @@ I hope all your wishes come true my queen ❤️
 <div id="qr"></div>
 
 <script>
-/* 🌟 Smooth Collage Slideshow */
+/* Smooth Collage Slideshow */
 const collageImages = [
     'No subject/photo1.jpg',
     'No subject/photo2.jpg',
@@ -181,7 +192,7 @@ function nextBackground(){
 nextBackground();
 setInterval(nextBackground,5000);
 
-/* 🌌 Floating Particles with music beat */
+/* Floating Particles */
 const particles = [];
 for(let i=0;i<60;i++){
     const p=document.createElement('div');
@@ -193,18 +204,17 @@ for(let i=0;i<60;i++){
     particles.push(p);
 }
 
-/* Simple beat pulse effect (approximate) */
+/* Beat-synced glow (approximate) */
 const button = document.querySelector('button');
 const h1 = document.querySelector('h1');
 setInterval(()=>{
-    // Pulse glow effect to simulate music beat
     button.style.transform = 'scale(1.1)';
     h1.style.textShadow='0 0 30px #fff,0 0 60px #ffcc00';
     setTimeout(()=>{
         button.style.transform='scale(1)';
         h1.style.textShadow='0 0 20px #fff,0 0 30px #ffcc00';
     },300);
-},600); // pulse approx every 0.6s (adjust to match beat)
+},600);
 
 /* Globe + Ticket */
 const countries = ["France 🇫🇷","Italy 🇮🇹","Japan 🇯🇵","Brazil 🇧🇷","Greece 🇬🇷","Jamaica 🇯🇲","Thailand 🇹🇭"];
@@ -230,17 +240,22 @@ function initGlobe(){
     c.style.display="block";
     scene=new THREE.Scene();
     camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
-    renderer=new THREE.WebGLRenderer({alpha:true});
-    renderer.setSize(300,300);
+    renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+    renderer.setSize(c.offsetWidth,c.offsetHeight);
     c.appendChild(renderer.domElement);
 
+    // Use local texture to avoid black globe
     globe=new THREE.Mesh(
         new THREE.SphereGeometry(2,32,32),
-        new THREE.MeshStandardMaterial({map:new THREE.TextureLoader().load("https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg")})
+        new THREE.MeshStandardMaterial({
+            map: new THREE.TextureLoader().load('textures/land_ocean_ice_cloud_2048.jpg')
+        })
     );
     scene.add(globe);
     camera.position.z=5;
-    scene.add(new THREE.PointLight(0xffffff,1));
+    const light=new THREE.PointLight(0xffffff,1);
+    light.position.set(5,5,5);
+    scene.add(light);
 
     (function animate(){
         requestAnimationFrame(animate);
@@ -259,9 +274,20 @@ function revealPrize(){
     ticket.classList.add('show');
     document.getElementById("message").style.display="block";
 
-    confetti({particleCount:400,spread:160,gravity:0.8,ticks:250,colors:['#ffcc00','#ff6ec7','#6e9cff'],shapes:['circle','star']});
+    confetti({
+        particleCount:400,
+        spread:160,
+        gravity:0.8,
+        ticks:250,
+        colors:['#ffcc00','#ff6ec7','#6e9cff'],
+        shapes:['circle','star']
+    });
 
-    new QRCode(document.getElementById("qr"),{text:window.location.href,width:150,height:150});
+    new QRCode(document.getElementById("qr"),{
+        text:window.location.href,
+        width:150,
+        height:150
+    });
 }
 </script>
 </body>
