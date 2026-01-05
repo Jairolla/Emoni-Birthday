@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
-/* === Body Emerald Theme === */
 body {
     margin: 0;
     padding: 0;
@@ -18,67 +17,40 @@ body {
     text-align: center;
     min-height: 100vh;
     background: linear-gradient(135deg, #046307, #2ecc71);
-    overflow-x: hidden;
 }
 
-/* === Floating Sparkles === */
-.particle {
-    position: fixed;
-    border-radius:50%;
-    background: rgba(255,255,255,0.8);
-    pointer-events:none;
-    z-index:1;
-    animation: float 6s linear infinite;
-}
-@keyframes float {
-    0% { transform: translateY(0) translateX(0); opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { transform: translateY(-600px) translateX(100px); opacity: 0; }
-}
-
-/* === Header === */
 h1 {
-    margin-top: 30px;
+    margin-top: 40px;
     font-size: 2.5em;
     text-shadow: 0 0 25px #fff, 0 0 40px #a2f5a2;
-    z-index: 10;
 }
 
-/* === Button === */
 button {
-    margin-top: 20px;
+    margin-top: 30px;
     padding: 15px 35px;
     font-size: 1.2em;
     border: none;
     border-radius: 50px;
     background: linear-gradient(45deg, #1abc9c, #27ae60);
     cursor: pointer;
-    animation: pulse 2s infinite;
     transition: all 0.2s ease;
-    z-index: 10;
 }
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+button:hover {
+    transform: scale(1.05);
 }
-.birthdate { font-size: 0.85em; text-shadow: 0 0 20px #fff, 0 0 30px #a2f5a2; }
 
-/* === Countdown & Cat === */
-#countdown { font-size: 2em; margin-top: 20px; display: none; }
-#cat {
+.birthdate {
+    display: block;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+#countdown {
+    font-size: 2em;
+    margin-top: 20px;
     display: none;
-    width: 150px;
-    max-width: 40%;
-    margin: 20px auto;
-    animation: bounce 1s infinite alternate;
-}
-@keyframes bounce {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-10px); }
 }
 
-/* === Ticket === */
 #ticket {
     display: none;
     background: rgba(255,255,255,0.95);
@@ -89,31 +61,18 @@ button {
     max-width: 350px;
     border-radius: 25px;
     box-shadow: 0 10px 50px rgba(0,255,0,0.8);
-    transform: translateY(30px);
-    opacity: 0;
-    transition: all 1s ease;
     text-align: left;
     font-weight: bold;
 }
-#ticket.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
 
-/* === Personal Message === */
 #message {
     display: none;
     font-size: 1.2em;
     margin: 20px;
     color: #dfffd6;
-    text-align: center;
     line-height: 1.4em;
-    transition: opacity 1s ease;
 }
-#message.show { display:block; opacity: 1; }
 
-/* === Mobile Adjustments === */
 @media screen and (max-width: 400px) {
     h1 { font-size: 2em; }
     button { font-size: 1em; padding: 12px 25px; }
@@ -123,20 +82,16 @@ button {
 }
 </style>
 </head>
-
 <body>
 
 <h1>🎉 HAPPY BIRTHDAY <br> EMONI FAITH MORRIS 🎉</h1>
 
 <button onclick="startCountdown()">
-    Please Click Here<br>
+    Please Click Here
     <span class="birthdate">01 / 04 / 1999</span>
 </button>
 
 <div id="countdown"></div>
-
-<!-- Local black cat image -->
-<img id="cat" src="cat.png" alt="Cute Black Cat">
 
 <div id="ticket"></div>
 
@@ -146,51 +101,43 @@ I hope all your wishes come true my queen ❤️
 </div>
 
 <script>
-// Floating sparkles
-for(let i=0; i<60; i++){
-  const p=document.createElement('div');
-  p.className='particle';
-  p.style.left=Math.random()*100+'%';
-  p.style.width=p.style.height=(3+Math.random()*5)+'px';
-  p.style.animationDuration=(4+Math.random()*5)+'s';
-  document.body.appendChild(p);
-}
-
 // Countdown logic
-function startCountdown(){
+function startCountdown() {
     const countdownEl = document.getElementById("countdown");
-    const catEl = document.getElementById("cat");
-    countdownEl.style.display="block";
-    catEl.style.display="block";
+    countdownEl.style.display = "block";
 
     let count = 3;
     countdownEl.innerText = `🎉 ${count} 🎉`;
-    const interval = setInterval(()=>{
+
+    const interval = setInterval(() => {
         count--;
-        if(count > 0){
+        if(count > 0) {
             countdownEl.innerText = `🎉 ${count} 🎉`;
         } else {
             clearInterval(interval);
-            countdownEl.style.display="none";
-            catEl.style.display="none";
+            countdownEl.style.display = "none";
             revealTicket();
         }
-    },1000);
+    }, 1000);
 }
 
 // Reveal ticket
-function revealTicket(){
+function revealTicket() {
     const ticket = document.getElementById("ticket");
+    const locations = ["Jamaica", "Bahamas", "Ghana", "Nigeria", "Kenya", "Barbados"];
+    // Select random country
+    const randomCountry = locations[Math.floor(Math.random() * locations.length)];
+
     ticket.innerHTML = `
     <h2>🎟️ Birthday Gift</h2>
     <p><strong>Recipient:</strong> Emoni Faith Morris</p>
-    <p><strong>Gift:</strong> A trip to anywhere you wish! 🌍</p>
+    <p><strong>Gift:</strong> A free trip to <strong>${randomCountry}</strong>! 🌍</p>
     <p><strong>Class:</strong> Queen 👑</p>`;
-    ticket.classList.add('show');
+    ticket.style.display = "block";
 
-    const msg = document.getElementById("message");
-    msg.classList.add('show');
+    document.getElementById("message").style.display = "block";
 
+    // Confetti
     confetti({
         particleCount: 400,
         spread: 160,
@@ -204,4 +151,3 @@ function revealTicket(){
 
 </body>
 </html>
-
